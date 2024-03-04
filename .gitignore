@@ -1,0 +1,4 @@
+# dataset/
+*.txt
+__pycache__/
+backup/
