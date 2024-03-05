@@ -19,3 +19,22 @@ vehicles = ['sonata', 'soul', 'spark']
 
 # Names of the datasets
 datasetNames = ['flooding', 'fuzzy', 'malfunction', 'no-attack']
+
+model_names = [
+    'FCN',
+    'CNN',
+    'LSTM'
+]
+
+epsilons = [
+    0.1,
+    0.2,
+    0.3
+]
+
+attack_names = [
+    'BIM',
+    'FGSM',
+    'PGD',
+    'RFGSM'
+]
