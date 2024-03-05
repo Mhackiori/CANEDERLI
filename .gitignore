@@ -1,6 +1,6 @@
-# dataset/
+dataset/
 *.txt
-*.csv
+# *.csv
 __pycache__/
 backup/
 attacks/
