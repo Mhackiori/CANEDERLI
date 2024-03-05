@@ -71,10 +71,11 @@ for vehicle in vehicles:
             df['Interval'] = df.groupby('CAN ID')['Timestamp'].diff().dt.total_seconds().fillna(0)
             df.drop('Timestamp', axis=1, inplace=True)
 
+            df['CAN ID'] = df['CAN ID'].str.replace(r'\D', '', regex=True).astype('int')
             df['Flag'] = df['Flag'].map({'R': 0, 'T': 1})
 
             dfs.append(df)
 
         vehicle_df = pd.concat(dfs, ignore_index=True)
 
-        df.to_csv(merged, index=False)
+        vehicle_df.to_csv(merged, index=False)
