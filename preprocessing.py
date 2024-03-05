@@ -79,3 +79,48 @@ for vehicle in vehicles:
         vehicle_df = pd.concat(dfs, ignore_index=True)
 
         vehicle_df.to_csv(merged, index=False)
+
+    # Multiclass classification
+    multi_dfs = []
+    multi_merged = f'./dataset/{vehicle}_multi.csv'
+    if not os.path.exists(multi_merged):
+        for csv in csvPaths:
+            print(f'[⚙️ PROCESSING] {csv}')
+            df = pd.read_csv(csv)
+
+            # Convert hexadecimal values to binary
+            hex_columns = ['DATA [0]', 'DATA [1]', 'DATA [2]', 'DATA [3]', 'DATA [4]', 'DATA [5]', 'DATA [6]', 'DATA [7]']
+
+            for i, col in enumerate(hex_columns):
+                    # Middle step by converting as int
+                    int_col = df[col].apply(int, base=16)
+                    # Convert the byte feature to binary string representation
+                    binary_representation = int_col.apply(lambda x: format(x, '08b'))
+                    # Split the binary string into separate bit features
+                    split_bits = binary_representation.apply(lambda x: [int(bit) for bit in x])
+                    # Add the split bits as separate columns to the DataFrame
+                    for j in range(8):
+                        df[f'Bit_{i*8+j}'] = split_bits.apply(lambda x: x[j])
+
+            df.drop(columns=hex_columns, inplace=True)
+
+            # Convert timestamp to datetime and calculate delta time
+            df['Timestamp'] = pd.to_datetime(df['Timestamp'], unit='s')
+            df['Interval'] = df.groupby('CAN ID')['Timestamp'].diff().dt.total_seconds().fillna(0)
+            df.drop('Timestamp', axis=1, inplace=True)
+
+            df['CAN ID'] = df['CAN ID'].str.replace(r'\D', '', regex=True).astype('int')
+            if 'no-attack' in csv:
+                df['Flag'] = df['Flag'].map({'R': 0})
+            elif 'flooding' in csv:
+                df['Flag'] = df['Flag'].map({'R': 0, 'T': 1})
+            elif 'fuzzy' in csv:
+                df['Flag'] = df['Flag'].map({'R': 0, 'T': 2})
+            elif 'malfunction' in csv:
+                df['Flag'] = df['Flag'].map({'R': 0, 'T': 3})
+
+            multi_dfs.append(df)
+
+        multi_vehicle_df = pd.concat(multi_dfs, ignore_index=True)
+
+        multi_vehicle_df.to_csv(multi_merged, index=False)
