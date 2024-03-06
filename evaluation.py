@@ -93,4 +93,4 @@ for target_vehicle in vehicles:
                             'F1': f1
                         }, ignore_index=True)
 
-    results_df.to_csv(f'./results/{target_vehicle}.csv', index=False)
+    results_df.to_csv(f'./results/transferability/{target_vehicle}.csv', index=False)

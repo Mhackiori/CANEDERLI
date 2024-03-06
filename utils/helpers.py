@@ -3,6 +3,7 @@ import os
 import random
 
 import torch
+import torchattacks
 from sklearn.metrics import accuracy_score, f1_score
 
 from .params import *
@@ -44,6 +45,32 @@ def train_multi_class_model(model, train_dataloader, criterion, optimizer, devic
         outputs = model(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
+        optimizer.step()
+
+
+def online_adversarial_training(model, train_dataloader, criterion, optimizer, device):
+    model.train()
+    attacks = [
+        torchattacks.BIM(model, eps=0.2),
+        torchattacks.FGSM(model, eps=0.2),
+        torchattacks.PGD(model, eps=0.2),
+        torchattacks.RFGSM(model, eps=0.2),
+    ]
+    for inputs, labels in train_dataloader:
+        inputs, labels = inputs.to(device), labels.squeeze(1).long().to(device)
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+
+        for attack in attacks:
+            adversarial_samples = attack(inputs, labels)
+            adversarial_samples_outputs = model(adversarial_samples)
+
+            attack_loss = criterion(adversarial_samples_outputs, labels)
+            attack_loss.backward()
+
         optimizer.step()
 
 
