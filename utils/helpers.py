@@ -74,6 +74,43 @@ def online_adversarial_training(model, train_dataloader, criterion, optimizer, d
         optimizer.step()
 
 
+def online_adversarial_training_all_models(models, train_dataloader, criterion, optimizers, device):
+    attacks_all = []
+    for model in models:
+        model.train()
+    
+        attacks_model = [
+            torchattacks.BIM(model, eps=0.2),
+            torchattacks.FGSM(model, eps=0.2),
+            torchattacks.PGD(model, eps=0.2),
+            torchattacks.RFGSM(model, eps=0.2),
+        ]
+        attacks_all.append(attacks_model)
+
+    for inputs, labels in train_dataloader:
+        inputs, labels = inputs.to(device), labels.squeeze(1).long().to(device)
+        
+        for model, optimizer in zip(models, optimizers):
+            optimizer.zero_grad()
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+    for inputs, labels in train_dataloader:
+        inputs, labels = inputs.to(device), labels.squeeze(1).long().to(device)
+        for attacks in attacks_all:
+            for attack in attacks:
+                adversarial_samples = attack(inputs, labels)
+                for model in models:
+                    adversarial_samples_outputs = model(adversarial_samples)
+
+                    attack_loss = criterion(adversarial_samples_outputs, labels)
+                    attack_loss.backward()
+
+            optimizer.step()
+
+
 def evaluate_model(model, dataloader, device):
     model.eval()
     all_predictions = []
