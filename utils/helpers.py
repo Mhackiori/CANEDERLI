@@ -148,3 +148,45 @@ def evaluate_multi_class_model(model, dataloader, device):
     f1 = f1_score(all_true_labels, all_predictions, average='macro')
 
     return accuracy, f1
+
+
+def attacks_evaluation(df, bw='white'):
+    """
+    Takes in input a list of DataFrames and white/back-box type evaluation
+    """
+
+    models_acc = []
+    models_f1 = []
+
+    attacks_acc = []
+    attacks_f1 = []
+
+    accuracy = []
+    f1 = []
+
+    if bw == 'white':
+        sub = df[df['Target_Vehicle'] == df['Source_Vehicle']]
+        sub = sub[sub['Target_Model'] == sub['Source_Model']]
+    elif bw == 'black':
+        sub = df[df['Target_Vehicle'] != df['Source_Vehicle']]
+        sub = sub[sub['Target_Model'] != sub['Source_Model']]    
+    else:
+        raise ValueError('bw must be either white or black')
+
+    for model_name in model_names:
+        model_df = sub[sub['Target_Model'] == model_name]
+
+        models_acc.append(model_df['Accuracy'].mean()) 
+        models_f1.append(model_df['F1'].mean())
+
+    for attack_name in attack_names:
+        attack_df = sub[sub['Attack'] == attack_name]
+
+        attacks_acc.append(attack_df['Accuracy'].mean())
+        attacks_f1.append(attack_df['F1'].mean())
+        
+    accuracy.append(sub['Accuracy'].mean())
+    f1.append(sub['F1'].mean())
+    
+
+    return models_acc, models_f1, attacks_acc, attacks_f1, np.mean(accuracy), np.mean(f1)
