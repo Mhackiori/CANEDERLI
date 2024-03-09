@@ -86,35 +86,29 @@ for vehicle in vehicles:
                         features = df.drop(['Class'], axis=1).values
                         labels = df['Class'].values
 
-                        # Perform train-test split
                         X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=seed)
 
-                        # Append the split datasets to lists
                         dfs_train.append((X_train, y_train))
                         dfs_test.append((X_test, y_test))
 
-        # Combine all splits into training and testing sets
         X_train_all = np.concatenate([item[0] for item in dfs_train], axis=0)
         y_train_all = np.concatenate([item[1] for item in dfs_train], axis=0)
 
         X_test_all = np.concatenate([item[0] for item in dfs_test], axis=0)
         y_test_all = np.concatenate([item[1] for item in dfs_test], axis=0)
         
-        # Convert data to PyTorch tensors
         X_train_tensor = torch.FloatTensor(X_train_all)
         y_train_tensor = torch.FloatTensor(y_train_all).unsqueeze(1)
 
         X_test_tensor = torch.FloatTensor(X_test_all)
         y_test_tensor = torch.FloatTensor(y_test_all).unsqueeze(1)
 
-        # Create DataLoader for training set
         train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
         train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 
         test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
         test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
-        # Loading pre-trained model
         model.load_state_dict(torch.load(path))
         model.to(device)
 
@@ -262,35 +256,29 @@ for vehicle in vehicles:
             features = df.drop(['Class'], axis=1).values
             labels = df['Class'].values
 
-            # Perform train-test split
             X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=seed)
 
-            # Append the split datasets to lists
             dfs_train.append((X_train, y_train))
             dfs_test.append((X_test, y_test))
 
-        # Combine all splits into training and testing sets
         X_train_all = np.concatenate([item[0] for item in dfs_train], axis=0)
         y_train_all = np.concatenate([item[1] for item in dfs_train], axis=0)
 
         X_test_all = np.concatenate([item[0] for item in dfs_test], axis=0)
         y_test_all = np.concatenate([item[1] for item in dfs_test], axis=0)
         
-        # Convert data to PyTorch tensors
         X_train_tensor = torch.FloatTensor(X_train_all)
         y_train_tensor = torch.FloatTensor(y_train_all).unsqueeze(1)
 
         X_test_tensor = torch.FloatTensor(X_test_all)
         y_test_tensor = torch.FloatTensor(y_test_all).unsqueeze(1)
 
-        # Create DataLoader for training set
         train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
         train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 
         test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
         test_dataloader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
-        # Loading pre-trained model
         model.load_state_dict(torch.load(path))
         model.to(device)
 
@@ -425,7 +413,6 @@ for vehicle in vehicles:
 
         advPath = os.path.join(advFold, f'{model_name}.pth')
 
-        # Loading and processing attack datasets
         dfs_train = []
         dfs_test = []
 
@@ -438,28 +425,23 @@ for vehicle in vehicles:
             features = df.drop(['Class'], axis=1).values
             labels = df['Class'].values
 
-            # Perform train-test split
             X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, random_state=seed)
 
-            # Append the split datasets to lists
             dfs_train.append((X_train, y_train))
             dfs_test.append((X_test, y_test))
 
-        # Combine all splits into training and testing sets
         X_train_all = np.concatenate([item[0] for item in dfs_train], axis=0)
         y_train_all = np.concatenate([item[1] for item in dfs_train], axis=0)
 
         X_test_all = np.concatenate([item[0] for item in dfs_test], axis=0)
         y_test_all = np.concatenate([item[1] for item in dfs_test], axis=0)
         
-        # Convert data to PyTorch tensors
         X_train_tensor = torch.FloatTensor(X_train_all)
         y_train_tensor = torch.FloatTensor(y_train_all).unsqueeze(1)
 
         X_test_tensor = torch.FloatTensor(X_test_all)
         y_test_tensor = torch.FloatTensor(y_test_all).unsqueeze(1)
 
-        # Create DataLoader for training set
         train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
         train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 
