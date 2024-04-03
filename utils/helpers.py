@@ -48,15 +48,12 @@ def train_multi_class_model(model, train_dataloader, criterion, optimizer, devic
         optimizer.step()
 
 
-def online_adversarial_training(model, train_dataloader, criterion, optimizer, device):
+def online_adversarial_training(model, train_dataloader, criterion, optimizer, device, epoch, epochs, model_name):
     model.train()
-    attacks = [
-        torchattacks.BIM(model, eps=0.2),
-        torchattacks.FGSM(model, eps=0.2),
-        torchattacks.PGD(model, eps=0.2),
-        torchattacks.RFGSM(model, eps=0.2),
-    ]
-    for inputs, labels in train_dataloader:
+    max_eps = 0.2
+    num_batches = len(train_dataloader)
+    for i, (inputs, labels) in enumerate(train_dataloader):
+        print(f'\t[💪 {model_name}] {epoch+1}/{epochs} | {i+1}/{num_batches}', end='\r')
         inputs, labels = inputs.to(device), labels.squeeze(1).long().to(device)
         optimizer.zero_grad()
         outputs = model(inputs)
@@ -64,32 +61,36 @@ def online_adversarial_training(model, train_dataloader, criterion, optimizer, d
         loss.backward()
         optimizer.step()
 
+        epoch_eps = max_eps * (i/num_batches)
+
+        attacks = [
+            torchattacks.BIM(model, eps=epoch_eps),
+            torchattacks.FGSM(model, eps=epoch_eps),
+            torchattacks.PGD(model, eps=epoch_eps),
+            torchattacks.RFGSM(model, eps=epoch_eps),
+        ]
+
         for attack in attacks:
             adversarial_samples = attack(inputs, labels)
             adversarial_samples_outputs = model(adversarial_samples)
 
             attack_loss = criterion(adversarial_samples_outputs, labels)
             attack_loss.backward()
-
-        optimizer.step()
+            optimizer.step()
 
 
 def online_adversarial_training_all_models(models, train_dataloader, criterion, optimizers, device):
-    attacks_all = []
+    num_batches = len(train_dataloader)
+    max_eps = 0.2
     for model in models:
         model.train()
-    
-        attacks_model = [
-            torchattacks.BIM(model, eps=0.2),
-            torchattacks.FGSM(model, eps=0.2),
-            torchattacks.PGD(model, eps=0.2),
-            torchattacks.RFGSM(model, eps=0.2),
-        ]
-        attacks_all.append(attacks_model)
 
-    for inputs, labels in train_dataloader:
+    for i, (inputs, labels) in enumerate(train_dataloader):
         inputs, labels = inputs.to(device), labels.squeeze(1).long().to(device)
         
+        all_adversarial_samples = []
+        all_adversarial_labels = []
+
         for model, optimizer in zip(models, optimizers):
             optimizer.zero_grad()
             outputs = model(inputs)
@@ -97,18 +98,33 @@ def online_adversarial_training_all_models(models, train_dataloader, criterion, 
             loss.backward()
             optimizer.step()
 
-    for inputs, labels in train_dataloader:
-        inputs, labels = inputs.to(device), labels.squeeze(1).long().to(device)
-        for attacks in attacks_all:
+            epoch_eps = max_eps * (i/num_batches)
+
+            attacks = [
+                torchattacks.BIM(model, eps=epoch_eps),
+                torchattacks.FGSM(model, eps=epoch_eps),
+                torchattacks.PGD(model, eps=epoch_eps),
+                torchattacks.RFGSM(model, eps=epoch_eps),
+            ]
+
+            model_adversarial_samples = []
+            model_adversarial_labels = []
             for attack in attacks:
                 adversarial_samples = attack(inputs, labels)
-                for model in models:
-                    adversarial_samples_outputs = model(adversarial_samples)
+                model_adversarial_samples.append(adversarial_samples)
+                model_adversarial_labels.append(labels)
 
-                    attack_loss = criterion(adversarial_samples_outputs, labels)
+            all_adversarial_samples.append(model_adversarial_samples)
+            all_adversarial_labels.append(model_adversarial_labels)
+
+        for model_adversarial_sample, model_adversarial_label in zip(all_adversarial_samples, all_adversarial_labels):
+            for adversarial_sample, adversarial_label in zip(model_adversarial_sample, model_adversarial_label):
+                for model, optimizer in zip(models, optimizers):
+                    adversarial_samples_outputs = model(adversarial_sample)
+
+                    attack_loss = criterion(adversarial_samples_outputs, adversarial_label)
                     attack_loss.backward()
-
-            optimizer.step()
+                    optimizer.step()
 
 
 def evaluate_model(model, dataloader, device):

@@ -29,7 +29,7 @@ class CNN(nn.Module):
         self.fc1 = nn.Linear(32 * 32, output_size)
 
     def forward(self, x):
-        x = x.unsqueeze(1)  # Add channel dimension
+        x = x.unsqueeze(1)
         x = F.relu(self.conv1(x))
         x = self.pool(x)
         x = x.view(x.size(0), -1)
@@ -44,11 +44,10 @@ class LSTM(nn.Module):
         self.fc1 = nn.Linear(hidden_size, output_size)
 
     def forward(self, x):
-        # Add a sequence length dimension
         x = x.unsqueeze(1)
 
         out, _ = self.lstm(x)
-        out = self.fc1(out[:, -1, :])  # Take the output from the last time step
+        out = self.fc1(out[:, -1, :])
         return torch.sigmoid(out)
     
 
@@ -75,7 +74,7 @@ class CNNMultiClass(nn.Module):
         self.fc1 = nn.Linear(32 * 32, num_classes)
 
     def forward(self, x):
-        x = x.unsqueeze(1)  # Add channel dimension
+        x = x.unsqueeze(1)
         x = F.relu(self.conv1(x))
         x = self.pool(x)
         x = x.view(x.size(0), -1)
@@ -90,9 +89,8 @@ class LSTMMultiClass(nn.Module):
         self.fc1 = nn.Linear(hidden_size, num_classes)
 
     def forward(self, x):
-        # Add a sequence length dimension
         x = x.unsqueeze(1)
 
         out, _ = self.lstm(x)
-        out = self.fc1(out[:, -1, :])  # Take the output from the last time step
+        out = self.fc1(out[:, -1, :])
         return out

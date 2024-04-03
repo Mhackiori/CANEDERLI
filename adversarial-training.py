@@ -614,8 +614,7 @@ for vehicle in vehicles:
         if not os.path.exists(advPath):
             epochs = 30
             for epoch in range(epochs):
-                print(f'\t[💪 {model_name}] {epoch+1}/{epochs}', end='\r')
-                online_adversarial_training(model, train_dataloader, nn.CrossEntropyLoss(), optimizer, device)
+                online_adversarial_training(model, train_dataloader, nn.CrossEntropyLoss(), optimizer, device, epoch, epochs, model_name)
             print()
             torch.save(model.state_dict(), advPath)
         else:
