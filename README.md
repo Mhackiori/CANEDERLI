@@ -28,6 +28,9 @@
       <a href="#abstract">Abstract</a>
     </li>
     <li>
+      <a href="#citation">Citation</a>
+    </li>
+    <li>
       <a href="#usage">Usage</a>
     </li>
     <li>
@@ -44,6 +47,22 @@
 ## 🧩 Abstract
 
 >The growing integration of vehicles with external networks has led to a surge in attacks targeting their Controller Area Network (CAN) internal bus. As a countermeasure, various Intrusion Detection Systems (IDSs) have been suggested in the literature to prevent and mitigate these threats. With the increasing volume of data facilitated by the integration of Vehicle-to-Vehicle (V2V) and Vehicle-to-Infrastructure (V2I) communication networks, most of these systems rely on data-driven approaches such as Machine Learning (ML) and Deep Learning (DL) models. However, these systems are susceptible to adversarial evasion attacks. While many researchers have explored this vulnerability, their studies often involve unrealistic assumptions, lack consideration for a realistic threat model, and fail to provide effective solutions. In this paper, we present **CANEDERLI** (**CAN** **E**vasion **D**etection **R**esi**LI**ence), a novel framework for securing CAN-based IDSs. Our system considers a realistic threat model and addresses the impact of adversarial attacks on DL-based detection systems. Our findings highlight strong transferability properties among diverse attack methodologies by considering multiple state-of-the-art attacks and model architectures. We analyze the impact of adversarial training in addressing this threat and propose an adaptive online adversarial training technique outclassing traditional fine-tuning methodologies. By making our framework publicly available, we aid practitioners and researchers in assessing the resilience of IDSs to a varied adversarial landscape.
+
+<p align="right"><a href="#top">(back to top)</a></p>
+<div id="citation"></div>
+
+## 🗣️ Citation
+
+Please, cite this work when referring to CANEDERLI.
+
+```
+@article{marchiori2024canederli,
+  title={CANEDERLI: On The Impact of Adversarial Training and Transferability on CAN Intrusion Detection Systems},
+  author={Marchiori, Francesco and Conti, Mauro},
+  journal={arXiv preprint arXiv:2404.04648},
+  year={2024}
+}
+```
 
 <p align="right"><a href="#top">(back to top)</a></p>
 <div id="usage"></div>
