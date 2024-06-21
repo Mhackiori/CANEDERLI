@@ -11,7 +11,7 @@
   <p align="center">
     On The Impact of Adversarial Training and Transferability on CAN Intrusion Detection Systems
     <br />
-    <a href="https://arxiv.org/abs/2404.04648"><strong>Preprint Available »</strong></a>
+    <a href="https://doi.org/10.1145/3649403.3656486"><strong>Paper Available »</strong></a>
     <br />
     <br />
     <a href="https://www.math.unipd.it/~fmarchio/">Francesco Marchiori</a>
