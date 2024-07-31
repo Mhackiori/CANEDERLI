@@ -56,11 +56,21 @@
 Please, cite this work when referring to CANEDERLI.
 
 ```
-@article{marchiori2024canederli,
-  title={CANEDERLI: On The Impact of Adversarial Training and Transferability on CAN Intrusion Detection Systems},
-  author={Marchiori, Francesco and Conti, Mauro},
-  journal={arXiv preprint arXiv:2404.04648},
-  year={2024}
+@inproceedings{10.1145/3649403.3656486,
+  author = {Marchiori, Francesco and Conti, Mauro},
+  title = {CANEDERLI: On The Impact of Adversarial Training and Transferability on CAN Intrusion Detection Systems},
+  year = {2024},
+  isbn = {9798400706028},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3649403.3656486},
+  doi = {10.1145/3649403.3656486},
+  booktitle = {Proceedings of the 2024 ACM Workshop on Wireless Security and Machine Learning},
+  pages = {8–13},
+  numpages = {6},
+  keywords = {adversarial attacks, adversarial training, adversarial transferability, controller area network, intrusion detection systems},
+  location = {Seoul, Republic of Korea},
+  series = {WiseML '24}
 }
 ```
 
